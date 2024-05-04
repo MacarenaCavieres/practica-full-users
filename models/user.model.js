@@ -38,8 +38,40 @@ const create = async (name, email) => {
     return newUser;
 };
 
+const update = async (uid, name, email) => {
+    const preview = await readFile(pathFile, "utf8");
+    const data = preview.trim() ? JSON.parse(preview) : [];
+
+    const user = data.find((item) => item.uid === uid);
+
+    if (!user) return "usuario no encontrado";
+
+    user.name = name;
+    user.email = email;
+
+    await writeFile(pathFile, JSON.stringify(data));
+
+    return user;
+};
+
+const userDelete = async (uid) => {
+    const preview = await readFile(pathFile, "utf8");
+    const data = preview.trim() ? JSON.parse(preview) : [];
+
+    const userQ = data.find((item) => item.uid === uid);
+
+    if (!userQ) return "Usuario no encontrado";
+
+    const users = data.filter((item) => item.uid !== uid);
+
+    await writeFile(pathFile, JSON.stringify(users));
+    return users;
+};
+
 export const User = {
     findAll,
     findById,
     create,
+    update,
+    userDelete,
 };
